@@ -1,0 +1,9 @@
+CreateUserEmptyDataTest.class
+CreateOrderWithIngAuthTest.class
+CreateUniqueUserTest.class
+LoginInvalidTest.class
+CreateSameUserTest.class
+LoginValidTest.class
+ChangeDataOfUserWithoutAuth.class
+ChangeDataOfUser.class
+GetOrderOfUser.class
