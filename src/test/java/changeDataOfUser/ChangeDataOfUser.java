@@ -1,4 +1,4 @@
-package LoginTest;
+package changeDataOfUser;
 
 import org.example.User;
 import org.example.UserData;
@@ -11,46 +11,53 @@ import org.junit.runners.Parameterized;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(Parameterized.class)
-public class LoginInvalidTest {
+public class ChangeDataOfUser {
     private final String name;
     private final String email;
     private final String password;
     private UserData userData;
     private User user;
-    private User userIncorrect;
+    private User userChangeData;
     private String token;
+    private String correctAccessToken;
 
-    public LoginInvalidTest(String name, String email, String password) {
+    public ChangeDataOfUser(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
     }
+
     @Parameterized.Parameters(name = "Тестовые данные: {0} {1} {2}")
     public static Object[][] Data() {
         return new Object[][]{
-                {"nik45", "12345678", "nik324@gmail.com" },
-                {"nik4", "12345678", "nik32445@gmail.com" },
-                {"nik423", "12345678", "nik32423@gmail.com" },
+                {"nik45", "12345678", "nik324@gmail.com" }, //меняем только имя
+                {"nik4", "12345678", "nik32445@gmail.com" }, //меняем только почту
+                {"nik423", "1234567890", "nik32423@gmail.com" }, //меняем все поля
+                {"nik423", "1234567890gfgfg", "nik32423@gmail.com" }, //меняем только пароль
         };
     }
+
     @Before
     public void setUp() {
         userData = new UserData();
         user = new User("nik4", "12345678", "nik324@gmail.com");
-        userIncorrect = new User(name, password, email);
+        userChangeData = new User(name, password, email);
     }
+
     @Test
-    public void LoginInvalidData() {
-        token = userData.createUser(user)
+    public void ChangeDataOfUser() {
+
+        userData.createUser(user);
+        token = userData.authorizationUser(user)
                 .extract().body().path("accessToken");
-        userData.authorizationUser(userIncorrect)
-                .assertThat().body("success", equalTo(false))
-                .assertThat().body("message", equalTo("email or password are incorrect"))
-                .and().statusCode(401);
+        correctAccessToken = token.replace("Bearer ", "");
+        userData.changeDataOfUser(userChangeData, correctAccessToken)
+                .assertThat().body("success", equalTo(true))
+                .and().statusCode(200);
     }
+
     @After
     public void cleanUp() {
-        String correctAccessToken = token.replace("Bearer ", "");
         userData.deleteUser(correctAccessToken);
     }
 }

@@ -1,4 +1,4 @@
-package CreateUserTest;
+package createUserTest;
 
 import org.example.User;
 import org.example.UserData;

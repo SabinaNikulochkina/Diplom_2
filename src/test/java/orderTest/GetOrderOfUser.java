@@ -1,4 +1,4 @@
-package OrderTest;
+package orderTest;
 
 import org.example.DataOfIngredients;
 import org.example.OrderData;

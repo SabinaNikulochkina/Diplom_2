@@ -1,4 +1,4 @@
-package LoginTest;
+package createUserTest;
 
 import org.example.User;
 import org.example.UserData;
@@ -7,8 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
-public class LoginValidTest {
+public class CreateUniqueUserTest {
+
     private UserData userData;
     private User user;
     private String token;
@@ -16,20 +18,19 @@ public class LoginValidTest {
     @Before
     public void setUp() {
         userData = new UserData();
-        user = new User("nik4", "12345678", "nik324@gmail.com");
+        user = new User("nik3", "12345678", "nik325@gmail.com");
     }
     @Test
-    public void LoginValidData() {
+    public void UserCanBeCreatedValidData() {
         token = userData.createUser(user)
-                .extract().body().path("accessToken");
-        userData.authorizationUser(user)
                 .assertThat().body("success", equalTo(true))
-                .and().statusCode(200);
+                .assertThat().body("accessToken", notNullValue())
+                .and().statusCode(200)
+                .extract().body().path("accessToken");
     }
     @After
     public void cleanUp() {
         String correctAccessToken = token.replace("Bearer ", "");
         userData.deleteUser(correctAccessToken);
     }
-
 }

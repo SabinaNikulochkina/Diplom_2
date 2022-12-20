@@ -1,4 +1,4 @@
-package ChangeDataOfUser;
+package changeDataOfUser;
 
 import org.example.User;
 import org.example.UserData;
