@@ -18,5 +18,4 @@ public class IngredientsList {
         this.ingredients = ingredients;
     }
 
-
 }

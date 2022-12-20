@@ -1,7 +1,13 @@
-import org.example.*;
+package OrderTest;
+
+import org.example.DataOfIngredients;
+import org.example.OrderData;
+import org.example.User;
+import org.example.UserData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -28,26 +34,21 @@ public class CreateOrderWithIngAuthTest {
     }
 
     @Test
-    public void OrderCanBeCreatedWithIngAuthUser(){
-        token = userData.createUser(user)
-                .extract().body().path("accessToken");
+    public void OrderCanBeCreatedWithIngAuthUser() {
+        token = userData.createUser(user).extract().body().path("accessToken");
         correctAccessToken = token.replace("Bearer ", "");
         userData.authorizationUser(user);
-
-         orderData.createOrder(orderWithIngredient, correctAccessToken)
+        orderData.createOrder(orderWithIngredient, correctAccessToken)
                 .assertThat().body("success", equalTo(true))
                 .assertThat().body("order", notNullValue())
                 .and().statusCode(200);
-        }
+    }
 
     @Test
-    public void OrderCantBeCreatedWithoutIngAuthUser(){
-        token = userData.createUser(user)
-                .extract().body().path("accessToken");
+    public void OrderCantBeCreatedWithoutIngAuthUser() {
+        token = userData.createUser(user).extract().body().path("accessToken");
         correctAccessToken = token.replace("Bearer ", "");
         userData.authorizationUser(user);
-
-
         orderData.createOrder(orderWithoutIngredient, correctAccessToken)
                 .assertThat().body("success", equalTo(false))
                 .assertThat().body("message", equalTo("Ingredient ids must be provided"))
@@ -55,25 +56,18 @@ public class CreateOrderWithIngAuthTest {
     }
 
     @Test
-    public void OrderCantBeCreatedWithInvalidIngAuthUser(){
-        token = userData.createUser(user)
-                .extract().body().path("accessToken");
+    public void OrderCantBeCreatedWithInvalidIngAuthUser() {
+        token = userData.createUser(user).extract().body().path("accessToken");
         correctAccessToken = token.replace("Bearer ", "");
         userData.authorizationUser(user);
-
-
-        orderData.createOrder(orderWithInvalidIngredient, correctAccessToken)
-                .and().statusCode(500);
+        orderData.createOrder(orderWithInvalidIngredient, correctAccessToken).and().statusCode(500);
     }
 
     @Test
-    public void OrderCantBeCreatedWithoutAuthUser(){
-        token = userData.createUser(user)
-                .extract().body().path("accessToken");
+    public void OrderCantBeCreatedWithoutAuthUser() {
+        token = userData.createUser(user).extract().body().path("accessToken");
         correctAccessToken = token.replace("Bearer ", "");
         userData.authorizationUser(user);
-
-
         orderData.createOrderWithoutAuth(orderWithIngredient)
                 .assertThat().body("success", equalTo(true))
                 .assertThat().body("order", notNullValue())
@@ -81,7 +75,7 @@ public class CreateOrderWithIngAuthTest {
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         userData.deleteUser(correctAccessToken);
     }
 }
